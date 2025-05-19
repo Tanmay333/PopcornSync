@@ -126,7 +126,4 @@ Feel free to fork the project and make your own improvements.
 
 This project is licensed under the MIT License.
 
-## 🌐 Connect with Me
 
-* GitHub: \[Your GitHub Profile Link]
-* Twitter: \[Your Twitter Handle]
