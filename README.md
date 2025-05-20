@@ -104,7 +104,7 @@ npm run server
 6. **Start Frontend:**
 
 ```bash
-npm run client
+npm run dev
 ```
 
 ## 🚀 How to Use
@@ -128,4 +128,4 @@ Feel free to fork the project and make your own improvements.
 This project is licensed under the MIT License.
 
 
->>>>>>> c495bd07a22905c90376c3452bb2a838ed1020f1
+
