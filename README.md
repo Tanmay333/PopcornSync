@@ -117,7 +117,7 @@ npm run dev
 
 * Voice chat using WebRTC.
 * Watch history for each user.
-* Room themes (Horror, Romantic, Action).
+* Room themes (Horror, Romantic, Action, Comedy, Thriller, Mystry, Sci-fi, Drama ).
 
 ## 🌟 Contributing
 
