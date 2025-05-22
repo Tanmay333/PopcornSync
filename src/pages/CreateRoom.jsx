@@ -2,19 +2,30 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
+const theaterOptions = [
+  { label: "🍿 Movie Theater", value: "movie" },
+  { label: "📺 YouTube Theater", value: "youtube" },
+  { label: "🤝 Chill Chat Room", value: "chat" },
+];
+
 function CreateRoom() {
-  const [friendCount, setFriendCount] = useState("");
+  const [theaterType, setTheaterType] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const navigate = useNavigate();
 
   const handleCreateRoom = () => {
-    if (friendCount === "" || isNaN(friendCount)) {
-      alert("Please enter a valid number of friends.");
+    if (!theaterType) {
+      alert("Please select a theater type.");
       return;
     }
 
-    const code = uuidv4().slice(0, 6); // Generate 6-char unique code
+    const code = uuidv4().slice(0, 6);
     setRoomCode(code);
+
+    // Navigate to the room page directly
+    navigate(`/room/${code}`, {
+      state: { theaterType },
+    });
   };
 
   const handleCopy = () => {
@@ -26,23 +37,34 @@ function CreateRoom() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4">
       <h1 className="text-4xl font-bold text-yellow-400 mb-6">
-        🎥 Create Room
+        🎥 Create Your Theater
       </h1>
 
       {!roomCode ? (
-        <div className="flex flex-col gap-4 items-center">
-          <input
-            type="number"
-            placeholder="How many friends?"
-            value={friendCount}
-            onChange={(e) => setFriendCount(e.target.value)}
-            className="px-4 py-2 rounded-md text-black"
-          />
+        <div className="flex flex-col gap-4 items-center w-full max-w-sm">
+          <p className="text-lg text-center text-gray-300">
+            Choose your theater type:
+          </p>
+          <div className="flex flex-col gap-3 w-full">
+            {theaterOptions.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setTheaterType(option.value)}
+                className={`px-4 py-3 rounded-xl font-semibold transition ${
+                  theaterType === option.value
+                    ? "bg-yellow-500 text-black"
+                    : "bg-gray-800 hover:bg-gray-700"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           <button
             onClick={handleCreateRoom}
-            className="bg-yellow-500 text-black px-6 py-2 rounded-xl font-semibold hover:bg-yellow-400 transition"
+            className="bg-green-500 text-black px-6 py-2 rounded-xl font-semibold hover:bg-green-400 transition mt-4"
           >
-            Create Room
+            Create Room 🚀
           </button>
         </div>
       ) : (
@@ -61,7 +83,7 @@ function CreateRoom() {
           </p>
           <button
             onClick={handleCopy}
-            className="bg-green-500 px-4 py-2 rounded-md hover:bg-green-400 transition"
+            className="bg-yellow-500 px-4 py-2 rounded-md hover:bg-yellow-400 transition"
           >
             Copy Invite Link 📋
           </button>
