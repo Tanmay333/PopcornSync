@@ -1,57 +1,17 @@
-<<<<<<< HEAD
-import React from "react";
-import { useLocation, useParams } from "react-router-dom";
-
-function Room() {
-  const { roomCode } = useParams();
-  const location = useLocation();
-  const theaterType = location.state?.theaterType || "movie"; // default
-
-  const roomLink = `${window.location.origin}/room/${roomCode}`;
-
-  return (
-    <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
-      {/* Header */}
-      <div className="w-full flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-yellow-400">
-          🎭 {theaterType.toUpperCase()} Theater
-        </h2>
-        <div className="text-right">
-          <p className="text-sm">
-            Room Code:{" "}
-            <span className="text-green-400 font-mono">{roomCode}</span>
-          </p>
-          <p className="text-sm">
-            Invite Link:{" "}
-            <a href={roomLink} className="text-blue-300 underline">
-              {roomLink}
-            </a>
-          </p>
-        </div>
-      </div>
-
-      {/* Screen Area */}
-      <div className="w-full max-w-3xl bg-gray-800 aspect-video rounded-xl flex items-center justify-center text-gray-400">
-        <p>🎬 Your video will appear here</p>
-      </div>
-
-      {/* Add Video Button */}
-      <button
-        className="mt-6 bg-yellow-500 text-black px-6 py-2 rounded-xl hover:bg-yellow-400"
-        onClick={() => alert("Coming Soon: Add video")}
-      >
-        ➕ Add Video
-      </button>
-=======
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 function Room() {
-  const { roomId } = useParams(); // Fix here
+  const { roomCode, roomId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [videoUrl, setVideoUrl] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [message, setMessage] = useState("");
+
+  const actualRoomCode = roomCode || roomId;
+  const theaterType = location.state?.theaterType || "movie";
+  const roomLink = `${window.location.origin}/room/${actualRoomCode}`;
 
   const handleSend = () => {
     if (message.trim() !== "") {
@@ -62,16 +22,24 @@ function Room() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-[#1a1a1a] to-black text-white flex flex-col">
-      {/* Room Header */}
+      {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#1a1a1a]">
         <div>
           <div className="text-lg font-bold text-red-500">
-            🍿 Room Code: {roomId}
+            🎭 {theaterType.toUpperCase()} Theater
           </div>
-          <div className="text-sm text-gray-300">👥 3 Participants</div>
+          <div className="text-sm text-yellow-400">
+            🍿 Room Code: {actualRoomCode}
+          </div>
+          <div className="text-sm">
+            Invite Link:{" "}
+            <a href={roomLink} className="text-blue-300 underline">
+              {roomLink}
+            </a>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          {/* Mock Avatars */}
+        <div className="flex gap-3">
+          {/* Mock avatars */}
           <div className="flex -space-x-2">
             <img
               src="https://i.pravatar.cc/30?img=1"
@@ -95,9 +63,9 @@ function Room() {
         </div>
       </header>
 
-      {/* Room Body */}
+      {/* Body */}
       <main className="flex flex-1">
-        {/* Video Section */}
+        {/* Video Area */}
         <section className="flex-1 flex flex-col items-center justify-center p-6">
           {videoUrl ? (
             <iframe
@@ -111,7 +79,7 @@ function Room() {
             <div className="text-center text-gray-400">
               🎬 No video yet.
               <br />
-              Paste an embed YouTube link below to start watching together!
+              Paste a YouTube embed link below to start watching together!
             </div>
           )}
           <input
@@ -123,7 +91,7 @@ function Room() {
           />
         </section>
 
-        {/* Chat Panel */}
+        {/* Chat */}
         <aside className="w-[340px] border-l border-white/10 bg-[#181818] flex flex-col">
           <div className="px-4 py-3 border-b border-white/5 text-red-400 font-semibold">
             💬 Live Chat
@@ -155,7 +123,6 @@ function Room() {
           </div>
         </aside>
       </main>
->>>>>>> 124c992 (redesign UI and update app flow)
     </div>
   );
 }

@@ -8,10 +8,6 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/create-room" element={<CreateRoom />} />
-<<<<<<< HEAD
-      <Route path="/join" element={<JoinRoom />} />
-=======
->>>>>>> 124c992 (redesign UI and update app flow)
       <Route path="/room/:roomId" element={<Room />} />
     </Routes>
   );

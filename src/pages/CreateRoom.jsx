@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,7 +9,6 @@ const theaterOptions = [
 ];
 
 function CreateRoom() {
-<<<<<<< HEAD
   const [theaterType, setTheaterType] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const navigate = useNavigate();
@@ -23,7 +22,6 @@ function CreateRoom() {
     const code = uuidv4().slice(0, 6);
     setRoomCode(code);
 
-    // Navigate to the room page directly
     navigate(`/room/${code}`, {
       state: { theaterType },
     });
@@ -90,20 +88,6 @@ function CreateRoom() {
           </button>
         </div>
       )}
-=======
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const roomCode = uuidv4().split("-")[0];
-    navigate(`/room/${roomCode}`);
-  }, [navigate]);
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black to-[#1a1a1a] text-white">
-      <div className="text-xl font-semibold animate-pulse">
-        Creating your room... 🎬🍿
-      </div>
->>>>>>> 124c992 (redesign UI and update app flow)
     </div>
   );
 }
