@@ -13,7 +13,7 @@ function CreateRoom() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black to-[#1a1a1a] text-white">
       <div className="text-xl font-semibold animate-pulse">
-        Creating your room... 🎬🍿
+        Creating your room...
       </div>
     </div>
   );
