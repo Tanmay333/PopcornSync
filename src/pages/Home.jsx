@@ -1,26 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Home = () => {
   const [roomCode, setRoomCode] = useState("");
+  const [timerId, setTimerId] = useState(null);
 
   const handleCreateRoom = () => {
-    const code = Math.random().toString(36).substring(2, 8);
-    setRoomCode(code);
+    if (!roomCode) {
+      const code = Math.random().toString(36).substring(2, 8);
+      setRoomCode(code);
+
+      const id = setTimeout(() => {
+        setRoomCode("");
+      }, 45000);
+      setTimerId(id);
+    }
   };
+
+  useEffect(() => {
+    return () => clearTimeout(timerId);
+  }, [timerId]);
 
   const roomLink = `${window.location.origin}/room/${roomCode}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white font-sans">
-      {/* Navbar */}
-      <nav className="flex justify-between items-center p-6 border-b border-white/10">
+      {/* Sticky Navbar */}
+      <nav className="sticky top-0 z-50 bg-[#1c1c2b] flex justify-between items-center p-6 border-b border-white/10 shadow-md">
         <h1 className="text-2xl font-bold tracking-wide">🍿 PopcornSync</h1>
-        <button
-          onClick={handleCreateRoom}
-          className="bg-pink-600 hover:bg-pink-500 px-4 py-2 rounded text-sm font-medium"
-        >
-          Create Room
-        </button>
+        <div className="space-x-3">
+          <button
+            onClick={handleCreateRoom}
+            className="bg-pink-600 hover:bg-pink-500 px-4 py-2 rounded text-sm font-medium"
+          >
+            🎬 Create Room
+          </button>
+          <button className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm font-medium">
+            🚪 Join Room
+          </button>
+        </div>
       </nav>
 
       {/* Hero Section */}
@@ -32,12 +49,6 @@ const Home = () => {
           PopcornSync lets you enjoy YouTube, Netflix, or any video source with
           friends — all in sync, with chat and fun!
         </p>
-        <button
-          onClick={handleCreateRoom}
-          className="mt-8 bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-full text-lg font-semibold shadow-md"
-        >
-          🎉 Join a Room
-        </button>
 
         {/* Room Link Box */}
         {roomCode && (
@@ -55,6 +66,9 @@ const Home = () => {
                   Copy
                 </button>
               </div>
+              <p className="text-xs text-gray-400 mt-2">
+                Link expires in 45 seconds ⏳
+              </p>
             </div>
           </div>
         )}
