@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
 
 const Home = () => {
   const [generatedRoomCode, setGeneratedRoomCode] = useState("");
@@ -7,23 +8,12 @@ const Home = () => {
   const [joinCodeInput, setJoinCodeInput] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const popcorn = document.createElement("div");
-      popcorn.innerText = "🍿";
-      popcorn.className = "popcorn";
-      popcorn.style.left = `${Math.random() * 100}vw`;
-      document.body.appendChild(popcorn);
-      setTimeout(() => popcorn.remove(), 4000);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   const handleCreateRoom = () => {
     if (!generatedRoomCode) {
       const code = Math.random().toString(36).substring(2, 8);
       setGeneratedRoomCode(code);
-      setTimeout(() => setGeneratedRoomCode(""), 45000);
+      toast.success("Room created!");
+      setTimeout(() => setGeneratedRoomCode(""), 10000);
     }
   };
 
@@ -38,12 +28,12 @@ const Home = () => {
   return (
     <div
       className="min-h-screen bg-cover bg-center text-white font-sans overflow-x-hidden"
-      style={{
-        backgroundImage: "url('/cinema-bg.jpg')",
-      }}
+      style={{ backgroundImage: "url('/cinema-bg.jpg')" }}
     >
+      <Toaster position="top-center" reverseOrder={false} />
+
       <div className="bg-black/70 min-h-screen">
-        {/* Sticky Navbar */}
+        {/* Navbar */}
         <nav className="sticky top-0 z-50 flex justify-between items-center p-6 bg-black/60 backdrop-blur-md border-b border-white/10 shadow-md">
           <h1 className="text-2xl font-bold tracking-wide">🍿 PopcornSync</h1>
           <div className="space-x-3">
@@ -62,7 +52,7 @@ const Home = () => {
           </div>
         </nav>
 
-        {/* Hero Section */}
+        {/* Hero */}
         <section className="text-center mt-20 px-6">
           <h2 className="text-4xl font-bold mb-4 drop-shadow-xl">
             Watch Together. Chat Together.
@@ -72,33 +62,49 @@ const Home = () => {
             with friends — all in sync, with chat and fun!
           </p>
 
-          {/* Room Link Box */}
+          {/* Room Link & Code Box */}
           {generatedRoomCode && (
             <div className="mt-10 flex flex-col items-center animate-fade-in">
-              <div className="bg-white/10 border border-white/20 rounded-xl px-6 py-5 w-full max-w-lg shadow-lg">
-                <h3 className="text-xl font-semibold mb-2">
+              <div className="bg-white/10 border border-white/20 rounded-xl px-6 py-5 w-full max-w-lg shadow-lg space-y-3">
+                <h3 className="text-xl font-semibold text-center">
                   🎬 Your Room is Ready!
                 </h3>
+
                 <div className="flex items-center justify-between bg-black/20 rounded-md px-4 py-2 text-sm">
                   <span className="truncate">{generatedRoomLink}</span>
                   <button
-                    onClick={() =>
-                      navigator.clipboard.writeText(generatedRoomLink)
-                    }
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedRoomLink);
+                      toast.success("Link copied!");
+                    }}
                     className="ml-4 bg-pink-600 hover:bg-pink-500 text-xs px-3 py-1 rounded"
                   >
                     Copy Link
                   </button>
                 </div>
-                <p className="text-xs text-gray-400 mt-2 text-center">
-                  🔒 Link expires in 45 seconds
+
+                <div className="flex items-center justify-between bg-black/20 rounded-md px-4 py-2 text-sm">
+                  <span>{generatedRoomCode}</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedRoomCode);
+                      toast.success("Code copied!");
+                    }}
+                    className="ml-4 bg-blue-600 hover:bg-blue-500 text-xs px-3 py-1 rounded"
+                  >
+                    Copy Code
+                  </button>
+                </div>
+
+                <p className="text-xs text-gray-400 text-center">
+                  🔒 Link & code expire in 10 seconds
                 </p>
               </div>
             </div>
           )}
         </section>
 
-        {/* Movie Poster Carousel */}
+        {/* Carousel */}
         <section className="mt-20 max-w-6xl mx-auto px-6">
           <h3 className="text-2xl font-bold mb-6 text-center">
             🍿 Fan Favorite Picks
@@ -125,7 +131,7 @@ const Home = () => {
           Built with ❤️ for movie lovers. © 2025 PopcornSync
         </footer>
 
-        {/* Join Room Modal */}
+        {/* Join Modal */}
         {showJoinModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div className="bg-[#1c1c2b] text-white p-6 rounded-lg shadow-2xl w-[90%] max-w-md animate-fade-in">
