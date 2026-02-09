@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import sampleVideo from "../assets/sample.mp4";
+import socket from "../socket";
 
 export default function VideoPlayer() {
   const videoRef = useRef(null);
@@ -14,6 +15,28 @@ export default function VideoPlayer() {
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
+  useEffect(() => {
+    const handlePlay = ({ time }) => {
+      if (!videoRef.current) return;
+      videoRef.current.currentTime = time;
+      videoRef.current.play();
+    };
+    console.log("EMIT PLAY");
+
+    const handlePause = ({ time }) => {
+      if (!videoRef.current) return;
+      videoRef.current.currentTime = time;
+      videoRef.current.pause();
+    };
+
+    socket.on("play-video", handlePlay);
+    socket.on("pause-video", handlePause);
+
+    return () => {
+      socket.off("play-video", handlePlay);
+      socket.off("pause-video", handlePause);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -47,8 +70,16 @@ export default function VideoPlayer() {
 
     if (video.paused) {
       video.play();
+
+      socket.emit("play-video", {
+        time: video.currentTime,
+      });
     } else {
       video.pause();
+
+      socket.emit("pause-video", {
+        time: video.currentTime,
+      });
     }
   };
 
