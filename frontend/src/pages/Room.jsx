@@ -5,14 +5,10 @@ import { useEffect } from "react";
 import socket from "../socket";
 
 export default function Room() {
-  const roomId = "test-room"; // abhi hardcoded
+  const roomId = "test-room";
 
   useEffect(() => {
     socket.emit("join-room", roomId);
-
-    return () => {
-      socket.disconnect();
-    };
   }, []);
 
   return (
