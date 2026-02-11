@@ -15,13 +15,13 @@ export default function VideoPlayer() {
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
+
   useEffect(() => {
     const handlePlay = ({ time }) => {
       if (!videoRef.current) return;
       videoRef.current.currentTime = time;
       videoRef.current.play();
     };
-    console.log("EMIT PLAY");
 
     const handlePause = ({ time }) => {
       if (!videoRef.current) return;
@@ -39,22 +39,32 @@ export default function VideoPlayer() {
   }, []);
 
   useEffect(() => {
+    const handleSeek = ({ time }) => {
+      if (!videoRef.current) return;
+      videoRef.current.currentTime = time;
+    };
+
+    socket.on("seek-video", handleSeek);
+
+    return () => {
+      socket.off("seek-video", handleSeek);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (e) => {
       const video = videoRef.current;
       if (!video) return;
 
-      // Space → Play / Pause
       if (e.code === "Space") {
         e.preventDefault();
         togglePlay();
       }
 
-      // → Forward 5s
       if (e.code === "ArrowRight") {
         video.currentTime = Math.min(video.currentTime + 5, duration);
       }
 
-      // ← Backward 5s
       if (e.code === "ArrowLeft") {
         video.currentTime = Math.max(video.currentTime - 5, 0);
       }
@@ -70,29 +80,43 @@ export default function VideoPlayer() {
 
     if (video.paused) {
       video.play();
-
-      socket.emit("play-video", {
-        time: video.currentTime,
-      });
+      socket.emit("play-video", { time: video.currentTime });
     } else {
       video.pause();
-
-      socket.emit("pause-video", {
-        time: video.currentTime,
-      });
+      socket.emit("pause-video", { time: video.currentTime });
     }
   };
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-  const seekToPosition = (clientX, bar) => {
+  const seekToPosition = (clientX, bar, emit = false) => {
     if (!videoRef.current || !duration) return;
 
     const rect = bar.getBoundingClientRect();
     const x = Math.min(Math.max(clientX - rect.left, 0), rect.width);
     const percent = x / rect.width;
+    const newTime = percent * duration;
 
-    videoRef.current.currentTime = percent * duration;
+    videoRef.current.currentTime = newTime;
+
+    if (emit) {
+      socket.emit("seek-video", { time: newTime });
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    seekToPosition(e.clientX, e.currentTarget, false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    seekToPosition(e.clientX, e.currentTarget, false);
+  };
+
+  const handleMouseUp = (e) => {
+    setIsDragging(false);
+    seekToPosition(e.clientX, e.currentTarget, true);
   };
 
   return (
@@ -105,20 +129,10 @@ export default function VideoPlayer() {
         onPause={() => setIsPlaying(false)}
         onEnded={() => {
           setIsPlaying(false);
-          if (videoRef.current) {
-            videoRef.current.currentTime = 0;
-          }
+          videoRef.current.currentTime = 0;
         }}
-        onLoadedMetadata={() => {
-          if (videoRef.current) {
-            setDuration(videoRef.current.duration);
-          }
-        }}
-        onTimeUpdate={() => {
-          if (videoRef.current) {
-            setCurrentTime(videoRef.current.currentTime);
-          }
-        }}
+        onLoadedMetadata={() => setDuration(videoRef.current.duration)}
+        onTimeUpdate={() => setCurrentTime(videoRef.current.currentTime)}
       />
 
       <div className="mt-4 space-y-4">
@@ -132,17 +146,11 @@ export default function VideoPlayer() {
         </div>
 
         <div
-          onMouseDown={(e) => {
-            setIsDragging(true);
-            seekToPosition(e.clientX, e.currentTarget);
-          }}
-          onMouseMove={(e) => {
-            if (!isDragging) return;
-            seekToPosition(e.clientX, e.currentTarget);
-          }}
-          onMouseUp={() => setIsDragging(false)}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
           onMouseLeave={() => setIsDragging(false)}
-          onClick={(e) => seekToPosition(e.clientX, e.currentTarget)}
+          onClick={(e) => seekToPosition(e.clientX, e.currentTarget, true)}
           className="w-full h-2 bg-gray-700 rounded-full cursor-pointer"
         >
           <div
@@ -153,9 +161,7 @@ export default function VideoPlayer() {
       </div>
 
       <div className="text-white text-sm mt-2 text-center">
-        {duration > 0
-          ? `${formatTime(currentTime)} / ${formatTime(duration)}`
-          : "Loading..."}
+        {formatTime(currentTime)} / {formatTime(duration)}
       </div>
     </div>
   );
