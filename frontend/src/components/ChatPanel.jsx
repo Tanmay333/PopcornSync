@@ -1,22 +1,34 @@
-export default function ChatPanel() {
+import { useState } from "react";
+
+export default function chatpanel() {
+  const [messages, setMessages] = useState([]);
+
+  const [input, setInput] = useState("");
+
   return (
-    <div className="w-[360px] bg-[#12121A] border-l border-[#1f1f2a] flex flex-col">
-      <div className="p-4 border-b border-[#1f1f2a] text-white font-medium">
-        Chat
+    <div className="w-[300px] h-[500px] bg-[#111] text-white rounded-xl flex flex-col">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className="bg-[#1f1f1f] px-3 py-2 rounded-lg text-sm"
+          >
+            {msg}
+          </div>
+        ))}
       </div>
 
-      <div className="flex-1 p-4 space-y-2 text-sm text-gray-400">
-        <p>Aman joined the room</p>
-        <div className="bg-[#1E1E2A] text-white p-2 rounded-xl w-fit">
-          Bhai scene 🔥
-        </div>
-      </div>
-
-      <div className="p-3 border-t border-[#1f1f2a]">
+      <div className="p-3 border-t border-gray-700 flex gap-2">
         <input
-          placeholder="Type your message..."
-          className="w-full bg-[#1A1A24] text-white px-4 py-2 rounded-xl outline-none text-sm"
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message..."
+          className="flex-1 bg-[#222] px-3 py-2 rounded-lg text-sm outline-none"
         />
+        <button className="bg-[#6C63FF] px-4 py-2 rounded-lg text-sm">
+          Send
+        </button>
       </div>
     </div>
   );
