@@ -19,7 +19,20 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", (roomId) => {
     socket.join(roomId);
+    socket.roomId = roomId;
     console.log(`User ${socket.id} joined room ${roomId}`);
+  });
+
+  socket.on("play-video", ({ time }) => {
+    socket.to(socket.roomId).emit("play-video", { time });
+  });
+
+  socket.on("pause-video", ({ time }) => {
+    socket.to(socket.roomId).emit("pause-video", { time });
+  });
+
+  socket.on("seek-video", ({ time }) => {
+    socket.to(socket.roomId).emit("seek-video", { time });
   });
 
   socket.on("disconnect", () => {
