@@ -9,6 +9,7 @@ export default function VideoPlayer() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [showCenterIcon, setShowCenterIcon] = useState(false);
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -84,6 +85,11 @@ export default function VideoPlayer() {
     } else {
       video.pause();
       socket.emit("pause-video", { time: video.currentTime });
+
+      setShowCenterIcon(true);
+      setTimeout(() => {
+        setShowCenterIcon(false);
+      }, 600);
     }
   };
 
@@ -120,48 +126,70 @@ export default function VideoPlayer() {
   };
 
   return (
-    <div className="w-[920px] max-w-full">
-      <video
-        ref={videoRef}
-        src={sampleVideo}
-        className="w-full rounded-2xl bg-black"
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => {
-          setIsPlaying(false);
-          videoRef.current.currentTime = 0;
-        }}
-        onLoadedMetadata={() => setDuration(videoRef.current.duration)}
-        onTimeUpdate={() => setCurrentTime(videoRef.current.currentTime)}
-      />
-
-      <div className="mt-4 space-y-4">
-        <div className="flex justify-center">
-          <button
+    <div className="w-[1100px] max-w-[85vw] mx-auto">
+      <div className="relative group w-full">
+        <video
+          ref={videoRef}
+          src={sampleVideo}
+          className="w-full rounded-2xl bg-black cursor-pointer"
+          onClick={togglePlay}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onEnded={() => {
+            setIsPlaying(false);
+            videoRef.current.currentTime = 0;
+          }}
+          onLoadedMetadata={() => setDuration(videoRef.current.duration)}
+          onTimeUpdate={() => setCurrentTime(videoRef.current.currentTime)}
+        />
+        {/* 🔹 CENTER PLAY ICON */}
+        {showCenterIcon && (
+          <div
+            className="
+      absolute inset-0
+      flex items-center justify-center
+      bg-black/20
+      cursor-pointer
+      transition-opacity
+    "
             onClick={togglePlay}
-            className="bg-[#6C63FF] text-white px-6 py-2 rounded-xl"
           >
-            {isPlaying ? "Pause" : "Play"}
-          </button>
-        </div>
+            <div className="bg-black/60 p-6 rounded-full">
+              <span className="text-white text-4xl">▶</span>
+            </div>
+          </div>
+        )}
 
         <div
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={() => setIsDragging(false)}
-          onClick={(e) => seekToPosition(e.clientX, e.currentTarget, true)}
-          className="w-full h-2 bg-gray-700 rounded-full cursor-pointer"
+          className="
+          absolute bottom-0 left-0 right-0
+          bg-gradient-to-t from-black/70 to-transparent
+          p-3
+          opacity-0
+          group-hover:opacity-100
+          transition-opacity
+        "
         >
+          <div className="flex justify-center gap-4 mb-3">
+            <div className="text-white text-sm mt-2 text-center">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+          </div>
           <div
-            className="h-full bg-[#6C63FF] rounded-full"
-            style={{ width: `${progress}%` }}
-          />
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={() => setIsDragging(false)}
+            onClick={(e) => seekToPosition(e.clientX, e.currentTarget, true)}
+            className="w-full h-2 bg-gray-700 rounded-full cursor-pointer"
+          >
+            <div
+              className="h-full bg-[#6C63FF] rounded-full"
+              style={{ width: `${progress}%` }}
+            />
+            <div className="mt-4 space-y-4"></div>
+          </div>
         </div>
-      </div>
-
-      <div className="text-white text-sm mt-2 text-center">
-        {formatTime(currentTime)} / {formatTime(duration)}
       </div>
     </div>
   );
