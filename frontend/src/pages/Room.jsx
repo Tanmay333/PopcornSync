@@ -13,7 +13,6 @@ export default function Room() {
 
   return (
     <div className="h-screen bg-[#0B0B0F] p-8">
-      {/* 🔹 TOP HEADER */}
       <div className="mb-4 px-2 text-white flex items-center justify-between">
         <h1 className="text-lg font-semibold">🎬 PopcornSync Room</h1>
 
