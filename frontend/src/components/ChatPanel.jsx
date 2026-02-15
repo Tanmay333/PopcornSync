@@ -12,7 +12,7 @@ export default function chatpanel() {
   };
 
   return (
-    <div className="w-[300px] h-[600px] bg-[#111] text-white rounded-xl flex flex-col">
+    <div className="w-[300px] h-full bg-[#111] text-white rounded-xl flex flex-col">
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map((msg, index) => (
           <div

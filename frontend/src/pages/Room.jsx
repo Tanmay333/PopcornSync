@@ -12,14 +12,22 @@ export default function Room() {
   }, []);
 
   return (
-    <div className="h-screen bg-[#0B0B0F] flex items-start gap-4 p-9">
-      {/* LEFT: VIDEO AREA */}
-      <div className="flex-1 flex items-center justify-center">
-        <VideoPlayer />
-      </div>
+    <div className="h-screen bg-[#0B0B0F] p-8">
+      {/* 🔹 TOP HEADER */}
+      <div className="mb-4 px-2 text-white flex items-center justify-between">
+        <h1 className="text-lg font-semibold">🎬 PopcornSync Room</h1>
 
-      {/* RIGHT: CHAT PANEL */}
-      <ChatPanel />
+        <span className="text-sm text-gray-400">2 participants</span>
+      </div>
+      <div className="flex gap-4 w-full">
+        <div className="flex-1">
+          <VideoPlayer />
+        </div>
+
+        <div className="self-stretch">
+          <ChatPanel />
+        </div>
+      </div>
     </div>
   );
 }
