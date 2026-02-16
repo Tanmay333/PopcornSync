@@ -1,15 +1,16 @@
 import VideoPlayer from "../components/VideoPlayer";
 import ChatPanel from "../components/ChatPanel";
 import RoomHeader from "../components/RoomHeader";
+import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import socket from "../socket";
 
 export default function Room() {
-  const roomId = "test-room";
+  const roomId = useParams();
 
   useEffect(() => {
     socket.emit("join-room", roomId);
-  }, []);
+  }, [roomId]);
 
   return (
     <div className="h-screen bg-[#0B0B0F] p-8">

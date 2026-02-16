@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Room from "./pages/Room";
 
 function App() {
-  const [page, setPage] = useState("home");
-
-  if (page === "room") {
-    return <Room />;
-  }
-
-  return <Home onCreate={() => setPage("room")} />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/room/:roomId" element={<Room />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
