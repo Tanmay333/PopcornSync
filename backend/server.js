@@ -43,3 +43,18 @@ io.on("connection", (socket) => {
 server.listen(5000, () => {
   console.log("Socket server running on port 5000");
 });
+
+io.on("connection", (socket) => {
+  socket.on("join-room", (roomId) => {
+    socket.join(roomId);
+
+    socket.to(roomId).emit("request-video-state");
+  });
+
+  socket.on("send-video-state", ({ roomId, time, isPlaying }) => {
+    socket.to(roomId).emit("sync-video-state", {
+      time,
+      isPlaying,
+    });
+  });
+});
