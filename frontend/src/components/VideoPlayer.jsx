@@ -1,9 +1,11 @@
 import { useRef, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import sampleVideo from "../assets/sample.mp4";
 import socket from "../socket";
 
 export default function VideoPlayer() {
   const videoRef = useRef(null);
+  const { roomId } = useParams();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -53,6 +55,44 @@ export default function VideoPlayer() {
   }, []);
 
   useEffect(() => {
+    const handleRequestVideoState = () => {
+      if (!videoRef.current) return;
+
+      socket.emit("send-video-state", {
+        roomId,
+        time: videoRef.current.currentTime,
+        isPlaying: !videoRef.current.paused,
+      });
+    };
+
+    socket.on("request-video-state", handleRequestVideoState);
+
+    return () => {
+      socket.off("request-video-state", handleRequestVideoState);
+    };
+  }, [roomId]);
+
+  useEffect(() => {
+    const handleSyncVideoState = ({ time, isPlaying }) => {
+      if (!videoRef.current) return;
+
+      videoRef.current.currentTime = time;
+
+      if (isPlaying) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    };
+
+    socket.on("sync-video-state", handleSyncVideoState);
+
+    return () => {
+      socket.off("sync-video-state", handleSyncVideoState);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (e) => {
       const video = videoRef.current;
       if (!video) return;
@@ -87,9 +127,7 @@ export default function VideoPlayer() {
       socket.emit("pause-video", { time: video.currentTime });
 
       setShowCenterIcon(true);
-      setTimeout(() => {
-        setShowCenterIcon(false);
-      }, 600);
+      setTimeout(() => setShowCenterIcon(false), 600);
     }
   };
 
@@ -142,39 +180,20 @@ export default function VideoPlayer() {
           onLoadedMetadata={() => setDuration(videoRef.current.duration)}
           onTimeUpdate={() => setCurrentTime(videoRef.current.currentTime)}
         />
-        {/* 🔹 CENTER PLAY ICON */}
+
         {showCenterIcon && (
-          <div
-            className="
-      absolute inset-0
-      flex items-center justify-center
-      bg-black/20
-      cursor-pointer
-      transition-opacity
-    "
-            onClick={togglePlay}
-          >
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
             <div className="bg-black/60 p-6 rounded-full">
               <span className="text-white text-4xl">▶</span>
             </div>
           </div>
         )}
 
-        <div
-          className="
-          absolute bottom-0 left-0 right-0
-          bg-gradient-to-t from-black/70 to-transparent
-          p-3
-          opacity-0
-          group-hover:opacity-100
-          transition-opacity
-        "
-        >
-          <div className="flex justify-center gap-4 mb-3">
-            <div className="text-white text-sm mt-2 text-center">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </div>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="text-white text-sm text-center mb-2">
+            {formatTime(currentTime)} / {formatTime(duration)}
           </div>
+
           <div
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -187,7 +206,6 @@ export default function VideoPlayer() {
               className="h-full bg-[#6C63FF] rounded-full"
               style={{ width: `${progress}%` }}
             />
-            <div className="mt-4 space-y-4"></div>
           </div>
         </div>
       </div>
