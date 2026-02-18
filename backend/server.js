@@ -20,7 +20,10 @@ io.on("connection", (socket) => {
   socket.on("join-room", (roomId) => {
     socket.join(roomId);
     socket.roomId = roomId;
+
     console.log(`User ${socket.id} joined room ${roomId}`);
+
+    socket.to(roomId).emit("request-video-state");
   });
 
   socket.on("play-video", ({ time }) => {
@@ -35,6 +38,13 @@ io.on("connection", (socket) => {
     socket.to(socket.roomId).emit("seek-video", { time });
   });
 
+  socket.on("send-video-state", ({ roomId, time, isPlaying }) => {
+    socket.to(roomId).emit("sync-video-state", {
+      time,
+      isPlaying,
+    });
+  });
+
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
@@ -42,19 +52,4 @@ io.on("connection", (socket) => {
 
 server.listen(5000, () => {
   console.log("Socket server running on port 5000");
-});
-
-io.on("connection", (socket) => {
-  socket.on("join-room", (roomId) => {
-    socket.join(roomId);
-
-    socket.to(roomId).emit("request-video-state");
-  });
-
-  socket.on("send-video-state", ({ roomId, time, isPlaying }) => {
-    socket.to(roomId).emit("sync-video-state", {
-      time,
-      isPlaying,
-    });
-  });
 });
