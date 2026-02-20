@@ -20,6 +20,20 @@ export default function VideoPlayer() {
   };
 
   useEffect(() => {
+    const saved = localStorage.getItem("videoState");
+    if (!saved || !videoRef.current) return;
+
+    const { time, isPlaying } = JSON.parse(saved);
+
+    videoRef.current.currentTime = time;
+    if (isPlaying) {
+      videoRef.current.play();
+    } else {
+      videoRef.current.pause();
+    }
+  }, []);
+
+  useEffect(() => {
     const handlePlay = ({ time }) => {
       if (!videoRef.current) return;
       videoRef.current.currentTime = time;
@@ -77,7 +91,6 @@ export default function VideoPlayer() {
       if (!videoRef.current) return;
 
       videoRef.current.currentTime = time;
-
       if (isPlaying) {
         videoRef.current.play();
       } else {
@@ -122,9 +135,17 @@ export default function VideoPlayer() {
     if (video.paused) {
       video.play();
       socket.emit("play-video", { time: video.currentTime });
+      localStorage.setItem(
+        "videoState",
+        JSON.stringify({ time: video.currentTime, isPlaying: true }),
+      );
     } else {
       video.pause();
       socket.emit("pause-video", { time: video.currentTime });
+      localStorage.setItem(
+        "videoState",
+        JSON.stringify({ time: video.currentTime, isPlaying: false }),
+      );
 
       setShowCenterIcon(true);
       setTimeout(() => setShowCenterIcon(false), 600);
@@ -142,6 +163,14 @@ export default function VideoPlayer() {
     const newTime = percent * duration;
 
     videoRef.current.currentTime = newTime;
+
+    localStorage.setItem(
+      "videoState",
+      JSON.stringify({
+        time: newTime,
+        isPlaying: !videoRef.current.paused,
+      }),
+    );
 
     if (emit) {
       socket.emit("seek-video", { time: newTime });

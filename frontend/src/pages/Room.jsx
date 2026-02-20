@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import socket from "../socket";
 
 export default function Room() {
-  const roomId = useParams();
+  const { roomId } = useParams();
 
   useEffect(() => {
     socket.emit("join-room", roomId);
