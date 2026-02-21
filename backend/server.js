@@ -23,7 +23,12 @@ io.on("connection", (socket) => {
 
     console.log(`User ${socket.id} joined room ${roomId}`);
 
+    // ask existing users for video state
     socket.to(roomId).emit("request-video-state");
+
+    // send participants count
+    const count = io.sockets.adapter.rooms.get(roomId)?.size || 1;
+    io.to(roomId).emit("participants-count", count);
   });
 
   socket.on("play-video", ({ time }) => {
@@ -46,6 +51,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    const roomId = socket.roomId;
+    if (!roomId) return;
+
+    const count = io.sockets.adapter.rooms.get(roomId)?.size || 0;
+    io.to(roomId).emit("participants-count", count);
+
     console.log("User disconnected:", socket.id);
   });
 });
