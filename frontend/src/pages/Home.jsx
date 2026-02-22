@@ -9,27 +9,24 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0B0F] flex items-center justify-center">
-      <div className="text-center max-w-xl px-4">
-        <h1 className="text-white text-5xl font-bold tracking-tight">
-          PopcornSync 🍿
-        </h1>
+    <div className="relative min-h-screen bg-[#0B0B0F] overflow-hidden">
+      {/* Background glows */}
+      <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-[120px]" />
+      <div className="absolute top-1/3 -right-40 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px]" />
 
-        <p className="text-gray-400 mt-4 text-lg">
-          Watch movies together. From anywhere.
-        </p>
+      <div className="relative z-10 flex items-center min-h-screen px-8">
+        <div className="max-w-2xl">
+          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
+            Watch movies.
+            <br />
+            Together. Anywhere.
+          </h1>
 
-        <div className="flex justify-center gap-4 mt-10">
-          <button
-            onClick={createRoom}
-            className="bg-[#6C63FF] hover:opacity-90 transition text-white px-7 py-3 rounded-xl text-sm font-medium"
-          >
-            Create Room
-          </button>
-
-          <button className="border border-gray-700 hover:bg-gray-800 transition text-white px-7 py-3 rounded-xl text-sm font-medium">
-            Join Room
-          </button>
+          <p className="mt-6 text-lg text-gray-300 leading-relaxed">
+            Sync video playback, chat live,
+            <br />
+            and feel like you’re in the same room.
+          </p>
         </div>
       </div>
     </div>
