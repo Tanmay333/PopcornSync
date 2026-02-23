@@ -28,6 +28,29 @@ export default function Home() {
             and feel like you’re in the same room.
           </p>
         </div>
+
+        <div className="flex justify-end">
+          <div className="relative w-full max-w-sm rounded-2xl p-10 bg-black/40 backdrop-blur-lg"></div>
+          <div className="relative w-full max-w-sm rounded-2xl p-10 bg-black/40 backdrop-blur-lg"></div>
+
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="text-white/15 text-9xl rotate-[-12deg] select-none tracking-widest- translate-y-8">
+              🎬 ▶️ 🎞️ 🍿
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-50"></div>
+          <button className="w-full px-12  py-6 rounded-xl border border-white/40 text-white text-base tracking-wide whitespace-nowrap">
+            Create a Room
+          </button>
+          <div className="flex justify-end"></div>
+          <div className="relative w-full max-w-sm rounded-2xl p-6  backdrop-blur-lg"></div>
+
+          <div className="flex flex-col gap-10"></div>
+          <button className="w-full px-12 py-6 rounded-xl border border-white/40 text-white text-base tracking-wide whitespace-nowrap">
+            Join with Code
+          </button>
+        </div>
       </div>
     </div>
   );
