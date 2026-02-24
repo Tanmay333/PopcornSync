@@ -8,6 +8,14 @@ export default function Home() {
     navigate(`/room/${roomId}`);
   };
 
+  const JoinRoom = () => {
+    const roomId = "test-room";
+    navigate(`/room/${roomId}`);
+  };
+
+  const clickSound = new Audio("/sounds/click.wav");
+  clickSound.volume = 0.15;
+
   return (
     <div className="relative min-h-screen bg-[#0B0B0F] overflow-hidden">
       {/* Background glows */}
@@ -40,14 +48,50 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-50"></div>
-          <button className="w-full px-12  py-6 rounded-xl border border-white/40 text-white text-base tracking-wide whitespace-nowrap">
+          <button
+            onClick={() => {
+              clickSound.currentTime = 0;
+              clickSound.play().catch(() => {});
+              createRoom();
+            }}
+            className="
+    w-full px-12 py-6
+    rounded-xl
+    text-white text-base font-semibold
+    tracking-wide whitespace-nowrap
+border border-white/40
+    transition-all duration-300 ease-out
+    hover:bg-[black]
+    hover:shadow-[0_0_40px_rgba(108,99,255,0.45)]
+    hover:-translate-y-1
+    active:translate-y-0
+  "
+          >
             Create a Room
           </button>
           <div className="flex justify-end"></div>
           <div className="relative w-full max-w-sm rounded-2xl p-6  backdrop-blur-lg"></div>
 
           <div className="flex flex-col gap-10"></div>
-          <button className="w-full px-12 py-6 rounded-xl border border-white/40 text-white text-base tracking-wide whitespace-nowrap">
+          <button
+            onClick={() => {
+              clickSound.currentTime = 0;
+              clickSound.play().catch(() => {});
+              createRoom();
+            }}
+            className="
+    w-full px-12 py-6
+    rounded-xl
+    text-white text-base font-semibold
+    tracking-wide whitespace-nowrap
+border border-white/40
+    transition-all duration-300 ease-out
+    hover:bg-[black]
+    hover:shadow-[0_0_40px_rgba(108,99,255,0.45)]
+    hover:-translate-y-1
+    active:translate-y-0
+  "
+          >
             Join with Code
           </button>
         </div>
