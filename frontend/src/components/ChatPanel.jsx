@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function chatpanel() {
+export default function ChatPanel() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
@@ -12,34 +12,59 @@ export default function chatpanel() {
   };
 
   return (
-    <div className="w-[300px] h-full bg-[#111] text-white rounded-xl flex flex-col">
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+    <div className="w-[320px] h-full bg-[#111] rounded-2xl flex flex-col border border-white/10">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-white/10 text-white font-semibold">
+        Live Chat
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 px-4 py-3 space-y-3 overflow-y-auto text-sm text-gray-200">
+        {messages.length === 0 && (
+          <p className="text-gray-500 text-center">Start the conversation 🍿</p>
+        )}
+
         {messages.map((msg, index) => (
           <div
             key={index}
-            className="bg-[#1f1f1f] px-3 py-2 rounded-lg text-sm"
+            className="max-w-[80%] bg-[#1C1C22] px-3 py-2 rounded-xl"
           >
             {msg}
           </div>
         ))}
       </div>
 
-      <div className="p-3 border-t border-gray-700 flex gap-2">
+      {/* Input */}
+      <div className="p-3 border-t border-white/10 flex gap-2">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSend();
-            }
+            if (e.key === "Enter") handleSend();
           }}
           placeholder="Type a message..."
-          className="flex-1 bg-[#222] px-3 py-2 rounded-lg text-sm outline-none"
+          className="
+            flex-1 px-4 py-3
+            rounded-xl
+            bg-[#1A1A1F]
+            text-white text-sm
+            placeholder-gray-400
+            outline-none
+            focus:ring-2 focus:ring-[#6C63FF]/40
+          "
         />
+
         <button
           onClick={handleSend}
-          className="bg-[#6C63FF] px-4 py-2 rounded-lg text-sm"
+          className="
+            bg-[#6C63FF]
+            px-4 py-3
+            rounded-xl
+            text-white text-sm
+            hover:bg-[#7A73FF]
+            transition
+          "
         >
           Send
         </button>
