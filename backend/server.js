@@ -43,6 +43,12 @@ io.on("connection", (socket) => {
     socket.to(socket.roomId).emit("seek-video", { time });
   });
 
+  socket.on("send-message", ({ roomId, message }) => {
+    socket.to(roomId).emit("receive-message", {
+      message,
+      sender: socket.id,
+    });
+  });
   socket.on("send-video-state", ({ roomId, time, isPlaying }) => {
     socket.to(roomId).emit("sync-video-state", {
       time,
